@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro de Citas - Departamento de Visas</title>
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const form = document.getElementById("citaForm");
+            const listaCitas = document.getElementById("listaCitas");
+            const totalCitas = document.getElementById("totalCitas");
+            let citas = [];
+
+            // Función para actualizar la interfaz
+            function actualizarUI() {
+                listaCitas.innerHTML = "";
+                citas.forEach((cita, index) => {
+                    const li = document.createElement("li");
+                    li.innerHTML = `${index + 1}. ${cita.nombre} - ${cita.fecha} - ${cita.hora} (${cita.tramite})
+                        <button onclick="editarCita(${index})" class='ml-4 text-blue-600'>Editar</button>
+                        <button onclick="eliminarCita(${index})" class='ml-2 text-red-600'>Eliminar</button>`;
+                    listaCitas.appendChild(li);
+                });
+                totalCitas.textContent = citas.length;
+            }
+
+            // Manejar el envío del formulario
+            form.addEventListener("submit", (e) => {
+                e.preventDefault();
+                const nombre = document.getElementById("nombre").value;
+                const fecha = document.getElementById("fecha").value;
+                const hora = document.getElementById("hora").value;
+                const tramite = document.getElementById("tramite").value;
+
+                // Validar que no haya más de 3 citas por día
+                const citasEnFecha = citas.filter(cita => cita.fecha === fecha).length;
+                if (citasEnFecha >= 3) {
+                    alert("No se pueden registrar más de 3 citas por día.");
+                    return;
+                }
+
+                citas.push({ nombre, fecha, hora, tramite });
+                actualizarUI();
+                form.reset();
+            });
+
+            // Función para eliminar una cita
+            window.eliminarCita = (index) => {
+                citas.splice(index, 1);
+                actualizarUI();
+            };
+
+            // Función para editar una cita
+            window.editarCita = (index) => {
+                const cita = citas[index];
+                document.getElementById("nombre").value = cita.nombre;
+                document.getElementById("fecha").value = cita.fecha;
+                document.getElementById("hora").value = cita.hora;
+                document.getElementById("tramite").value = cita.tramite;
+                citas.splice(index, 1);
+                actualizarUI();
+            };
+        });
+    </script>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 text-gray-800 min-h-screen flex items-center justify-center">
+    <div class="max-w-3xl w-full p-8 bg-white shadow-lg rounded-2xl">
+        <div class="flex justify-between items-center mb-6">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/f/fc/Flag_of_Mexico.svg" alt="Bandera de México" class="w-16">
+            <h1 class="text-3xl font-semibold text-center">Registro de Citas - Departamento de Visas</h1>
+            <img src="https://upload.wikimedia.org/wikipedia/en/a/a4/Flag_of_the_United_States.svg" alt="Bandera de Estados Unidos" class="w-16">
+        </div>
+
+        <!-- Formulario de registro -->
+        <form id="citaForm" class="space-y-4">
+            <div>
+                <label for="nombre" class="block font-medium">Nombre:</label>
+                <input type="text" id="nombre" required class="mt-1 p-2 w-full border rounded-lg">
+            </div>
+            <div>
+                <label for="fecha" class="block font-medium">Fecha:</label>
+                <input type="date" id="fecha" required class="mt-1 p-2 w-full border rounded-lg">
+            </div>
+            <div>
+                <label for="hora" class="block font-medium">Hora:</label>
+                <input type="time" id="hora" required class="mt-1 p-2 w-full border rounded-lg">
+            </div>
+            <div>
+                <label for="tramite" class="block font-medium">Tipo de trámite:</label>
+                <select id="tramite" required class="mt-1 p-2 w-full border rounded-lg">
+                    <option value="Visa de turista">Visa de turista</option>
+                    <option value="Visa de trabajo">Visa de trabajo</option>
+                    <option value="Visa de estudiante">Visa de estudiante</option>
+                </select>
+            </div>
+            <button type="submit" class="bg-gray-600 hover:bg-gray-700 text-white py-2 px-4 rounded-lg w-full">Registrar Cita</button>
+        </form>
+
+        <!-- Sección de citas registradas -->
+        <div class="mt-8">
+            <h2 class="text-xl font-semibold">Citas Registradas (<span id="totalCitas">0</span>)</h2>
+            <ul id="listaCitas" class="mt-4 space-y-2"></ul>
+        </div>
+
+        <!-- Instrucciones -->
+        <!--
+        Instrucciones de uso:
+        1. Completa los campos del formulario y haz clic en "Registrar Cita".
+        2. Solo se permiten hasta 3 citas por día.
+        3. Puedes editar o eliminar citas registradas con los botones correspondientes.
+        -->
+    </div>
+</body>
+</html>
