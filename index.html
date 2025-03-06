@@ -27,114 +27,7 @@
     // Inicializa Firebase
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
-  </script>
 
-  <style>
-    .container {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 20px;
-    }
-
-    .banner {
-      text-align: center;
-      padding: 20px;
-      background-color: #f3f4f6;
-    }
-
-    .form-button {
-      background-color: #4CAF50;
-      color: white;
-      border-radius: 5px;
-      padding: 10px 20px;
-      font-size: 1.1rem;
-      margin-top: 20px;
-      transition: background-color 0.3s ease;
-    }
-
-    .form-button:hover {
-      background-color: #45a049;
-    }
-
-    .card {
-      background-color: white;
-      padding: 20px;
-      border-radius: 8px;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-      margin-top: 20px;
-    }
-
-    .card .card-title {
-      font-size: 1.5rem;
-      margin-bottom: 10px;
-    }
-
-    .card .card-content {
-      margin-top: 10px;
-    }
-
-    .flag-icon {
-      width: 50px;
-      height: 30px;
-    }
-  </style>
-</head>
-<body class="bg-gray-100">
-
-  <!-- Banner con imagen de banderas -->
-  <div class="banner">
-    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/7f/Flag_of_Mexico.svg/1280px-Flag_of_Mexico.svg.png" alt="Banderas" class="flag-icon inline">
-    <img src="https://upload.wikimedia.org/wikipedia/commons/a/a4/Flag_of_the_United_States.svg" alt="Banderas" class="flag-icon inline ml-4">
-    <h1 class="text-3xl font-semibold mt-4">Bienvenido al Departamento de Trámites de Visas</h1>
-    <p class="text-lg mt-2">Por favor, regístrese para agendar su cita</p>
-  </div>
-
-  <div class="container">
-
-    <!-- Formulario de Registro -->
-    <div class="card">
-      <h2 class="card-title text-xl font-bold">Registro de Cita</h2>
-      <div class="card-content">
-        <form id="formCita">
-          <div class="mb-4">
-            <label for="nombre" class="block text-sm font-medium text-gray-700">Nombre Completo</label>
-            <input type="text" id="nombre" required class="mt-1 block w-full border-gray-300 rounded-md shadow-sm">
-          </div>
-
-          <div class="mb-4">
-            <label for="fecha" class="block text-sm font-medium text-gray-700">Fecha</label>
-            <input type="date" id="fecha" required class="mt-1 block w-full border-gray-300 rounded-md shadow-sm">
-          </div>
-
-          <div class="mb-4">
-            <label for="hora" class="block text-sm font-medium text-gray-700">Hora</label>
-            <input type="time" id="hora" required class="mt-1 block w-full border-gray-300 rounded-md shadow-sm">
-          </div>
-
-          <div class="mb-4">
-            <label for="tipo_tramite" class="block text-sm font-medium text-gray-700">Tipo de Trámite</label>
-            <select id="tipo_tramite" required class="mt-1 block w-full border-gray-300 rounded-md shadow-sm">
-              <option value="Visa Estudiantil">Visa Estudiantil</option>
-              <option value="Visa de Trabajo">Visa de Trabajo</option>
-              <option value="Visa de Turista">Visa de Turista</option>
-            </select>
-          </div>
-
-          <button type="submit" class="form-button">Registrar Cita</button>
-        </form>
-      </div>
-    </div>
-
-    <!-- Lista de Citas Registradas -->
-    <div class="card">
-      <h2 class="card-title text-xl font-bold">Citas Registradas</h2>
-      <ul id="listaCitas" class="list-none">
-        <!-- Aquí se cargarán las citas -->
-      </ul>
-    </div>
-  </div>
-
-  <script>
     // Función para registrar cita
     document.getElementById('formCita').addEventListener('submit', async (e) => {
       e.preventDefault();
@@ -203,5 +96,62 @@
     cargarCitas();
   </script>
 
+</head>
+<body class="bg-gray-100">
+
+  <!-- Banner con imagen de banderas -->
+  <div class="banner">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/7f/Flag_of_Mexico.svg/1280px-Flag_of_Mexico.svg.png" alt="Banderas" class="flag-icon inline">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/a/a4/Flag_of_the_United_States.svg" alt="Banderas" class="flag-icon inline ml-4">
+    <h1 class="text-3xl font-semibold mt-4">Bienvenido al Departamento de Trámites de Visas</h1>
+    <p class="text-lg mt-2">Por favor, regístrese para agendar su cita</p>
+  </div>
+
+  <div class="container">
+
+    <!-- Formulario de Registro -->
+    <div class="card">
+      <h2 class="card-title text-xl font-bold">Registro de Cita</h2>
+      <div class="card-content">
+        <form id="formCita">
+          <div class="mb-4">
+            <label for="nombre" class="block text-sm font-medium text-gray-700">Nombre Completo</label>
+            <input type="text" id="nombre" required class="mt-1 block w-full border-gray-300 rounded-md shadow-sm">
+          </div>
+
+          <div class="mb-4">
+            <label for="fecha" class="block text-sm font-medium text-gray-700">Fecha</label>
+            <input type="date" id="fecha" required class="mt-1 block w-full border-gray-300 rounded-md shadow-sm">
+          </div>
+
+          <div class="mb-4">
+            <label for="hora" class="block text-sm font-medium text-gray-700">Hora</label>
+            <input type="time" id="hora" required class="mt-1 block w-full border-gray-300 rounded-md shadow-sm">
+          </div>
+
+          <div class="mb-4">
+            <label for="tipo_tramite" class="block text-sm font-medium text-gray-700">Tipo de Trámite</label>
+            <select id="tipo_tramite" required class="mt-1 block w-full border-gray-300 rounded-md shadow-sm">
+              <option value="Visa Estudiantil">Visa Estudiantil</option>
+              <option value="Visa de Trabajo">Visa de Trabajo</option>
+              <option value="Visa de Turista">Visa de Turista</option>
+            </select>
+          </div>
+
+          <button type="submit" class="form-button">Registrar Cita</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Lista de Citas Registradas -->
+    <div class="card">
+      <h2 class="card-title text-xl font-bold">Citas Registradas</h2>
+      <ul id="listaCitas" class="list-none">
+        <!-- Aquí se cargarán las citas -->
+      </ul>
+    </div>
+  </div>
+
 </body>
 </html>
+
