@@ -10,10 +10,11 @@
 
   <!-- Firebase SDKs -->
   <script type="module">
+    // Importamos las funciones necesarias de Firebase
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-app.js";
     import { getFirestore, collection, getDocs, addDoc, deleteDoc, doc, query, where, orderBy } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore.js";
 
-    // Tu configuración de Firebase
+    // Configuración de Firebase
     const firebaseConfig = {
       apiKey: "AIzaSyAH2aU4TiOYFUbmCDG70TJQ9NPzYJwN7kU",
       authDomain: "citasvisa-e24b4.firebaseapp.com",
@@ -24,7 +25,7 @@
       measurementId: "G-2YKDF13DFX"
     };
 
-    // Inicializa Firebase
+    // Inicializamos Firebase
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
@@ -154,4 +155,5 @@
 
 </body>
 </html>
+
 
