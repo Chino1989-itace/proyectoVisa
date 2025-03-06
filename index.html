@@ -1,115 +1,207 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Registro de Citas - Departamento de Visas</title>
-    <script>
-        document.addEventListener("DOMContentLoaded", () => {
-            const form = document.getElementById("citaForm");
-            const listaCitas = document.getElementById("listaCitas");
-            const totalCitas = document.getElementById("totalCitas");
-            let citas = [];
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Departamento de Trámites de Visas</title>
 
-            // Función para actualizar la interfaz
-            function actualizarUI() {
-                listaCitas.innerHTML = "";
-                citas.forEach((cita, index) => {
-                    const li = document.createElement("li");
-                    li.innerHTML = `${index + 1}. ${cita.nombre} - ${cita.fecha} - ${cita.hora} (${cita.tramite})
-                        <button onclick="editarCita(${index})" class='ml-4 text-blue-600'>Editar</button>
-                        <button onclick="eliminarCita(${index})" class='ml-2 text-red-600'>Eliminar</button>`;
-                    listaCitas.appendChild(li);
-                });
-                totalCitas.textContent = citas.length;
-            }
+  <!-- CDN para Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
 
-            // Manejar el envío del formulario
-            form.addEventListener("submit", (e) => {
-                e.preventDefault();
-                const nombre = document.getElementById("nombre").value;
-                const fecha = document.getElementById("fecha").value;
-                const hora = document.getElementById("hora").value;
-                const tramite = document.getElementById("tramite").value;
+  <!-- Firebase SDKs -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-app.js";
+    import { getFirestore, collection, getDocs, addDoc, deleteDoc, doc, query, where, orderBy } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore.js";
 
-                // Validar que no haya más de 3 citas por día
-                const citasEnFecha = citas.filter(cita => cita.fecha === fecha).length;
-                if (citasEnFecha >= 3) {
-                    alert("No se pueden registrar más de 3 citas por día.");
-                    return;
-                }
+    // Tu configuración de Firebase
+    const firebaseConfig = {
+      apiKey: "AIzaSyAH2aU4TiOYFUbmCDG70TJQ9NPzYJwN7kU",
+      authDomain: "citasvisa-e24b4.firebaseapp.com",
+      projectId: "citasvisa-e24b4",
+      storageBucket: "citasvisa-e24b4.firebasestorage.app",
+      messagingSenderId: "332365553461",
+      appId: "1:332365553461:web:1368851c0f2135c91f767c",
+      measurementId: "G-2YKDF13DFX"
+    };
 
-                citas.push({ nombre, fecha, hora, tramite });
-                actualizarUI();
-                form.reset();
-            });
+    // Inicializa Firebase
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+  </script>
 
-            // Función para eliminar una cita
-            window.eliminarCita = (index) => {
-                citas.splice(index, 1);
-                actualizarUI();
-            };
+  <style>
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+    }
 
-            // Función para editar una cita
-            window.editarCita = (index) => {
-                const cita = citas[index];
-                document.getElementById("nombre").value = cita.nombre;
-                document.getElementById("fecha").value = cita.fecha;
-                document.getElementById("hora").value = cita.hora;
-                document.getElementById("tramite").value = cita.tramite;
-                citas.splice(index, 1);
-                actualizarUI();
-            };
-        });
-    </script>
-    <script src="https://cdn.tailwindcss.com"></script>
+    .banner {
+      text-align: center;
+      padding: 20px;
+      background-color: #f3f4f6;
+    }
+
+    .form-button {
+      background-color: #4CAF50;
+      color: white;
+      border-radius: 5px;
+      padding: 10px 20px;
+      font-size: 1.1rem;
+      margin-top: 20px;
+      transition: background-color 0.3s ease;
+    }
+
+    .form-button:hover {
+      background-color: #45a049;
+    }
+
+    .card {
+      background-color: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      margin-top: 20px;
+    }
+
+    .card .card-title {
+      font-size: 1.5rem;
+      margin-bottom: 10px;
+    }
+
+    .card .card-content {
+      margin-top: 10px;
+    }
+
+    .flag-icon {
+      width: 50px;
+      height: 30px;
+    }
+  </style>
 </head>
-<body class="bg-gray-100 text-gray-800 min-h-screen flex items-center justify-center">
-    <div class="max-w-3xl w-full p-8 bg-white shadow-lg rounded-2xl">
-        <div class="flex justify-between items-center mb-6">
-            <img src="https://upload.wikimedia.org/wikipedia/commons/f/fc/Flag_of_Mexico.svg" alt="Bandera de México" class="w-16">
-            <h1 class="text-3xl font-semibold text-center">Registro de Citas - Departamento de Visas</h1>
-            <img src="https://upload.wikimedia.org/wikipedia/en/a/a4/Flag_of_the_United_States.svg" alt="Bandera de Estados Unidos" class="w-16">
-        </div>
+<body class="bg-gray-100">
 
-        <!-- Formulario de registro -->
-        <form id="citaForm" class="space-y-4">
-            <div>
-                <label for="nombre" class="block font-medium">Nombre:</label>
-                <input type="text" id="nombre" required class="mt-1 p-2 w-full border rounded-lg">
-            </div>
-            <div>
-                <label for="fecha" class="block font-medium">Fecha:</label>
-                <input type="date" id="fecha" required class="mt-1 p-2 w-full border rounded-lg">
-            </div>
-            <div>
-                <label for="hora" class="block font-medium">Hora:</label>
-                <input type="time" id="hora" required class="mt-1 p-2 w-full border rounded-lg">
-            </div>
-            <div>
-                <label for="tramite" class="block font-medium">Tipo de trámite:</label>
-                <select id="tramite" required class="mt-1 p-2 w-full border rounded-lg">
-                    <option value="Visa de turista">Visa de turista</option>
-                    <option value="Visa de trabajo">Visa de trabajo</option>
-                    <option value="Visa de estudiante">Visa de estudiante</option>
-                </select>
-            </div>
-            <button type="submit" class="bg-gray-600 hover:bg-gray-700 text-white py-2 px-4 rounded-lg w-full">Registrar Cita</button>
+  <!-- Banner con imagen de banderas -->
+  <div class="banner">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/7f/Flag_of_Mexico.svg/1280px-Flag_of_Mexico.svg.png" alt="Banderas" class="flag-icon inline">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/a/a4/Flag_of_the_United_States.svg" alt="Banderas" class="flag-icon inline ml-4">
+    <h1 class="text-3xl font-semibold mt-4">Bienvenido al Departamento de Trámites de Visas</h1>
+    <p class="text-lg mt-2">Por favor, regístrese para agendar su cita</p>
+  </div>
+
+  <div class="container">
+
+    <!-- Formulario de Registro -->
+    <div class="card">
+      <h2 class="card-title text-xl font-bold">Registro de Cita</h2>
+      <div class="card-content">
+        <form id="formCita">
+          <div class="mb-4">
+            <label for="nombre" class="block text-sm font-medium text-gray-700">Nombre Completo</label>
+            <input type="text" id="nombre" required class="mt-1 block w-full border-gray-300 rounded-md shadow-sm">
+          </div>
+
+          <div class="mb-4">
+            <label for="fecha" class="block text-sm font-medium text-gray-700">Fecha</label>
+            <input type="date" id="fecha" required class="mt-1 block w-full border-gray-300 rounded-md shadow-sm">
+          </div>
+
+          <div class="mb-4">
+            <label for="hora" class="block text-sm font-medium text-gray-700">Hora</label>
+            <input type="time" id="hora" required class="mt-1 block w-full border-gray-300 rounded-md shadow-sm">
+          </div>
+
+          <div class="mb-4">
+            <label for="tipo_tramite" class="block text-sm font-medium text-gray-700">Tipo de Trámite</label>
+            <select id="tipo_tramite" required class="mt-1 block w-full border-gray-300 rounded-md shadow-sm">
+              <option value="Visa Estudiantil">Visa Estudiantil</option>
+              <option value="Visa de Trabajo">Visa de Trabajo</option>
+              <option value="Visa de Turista">Visa de Turista</option>
+            </select>
+          </div>
+
+          <button type="submit" class="form-button">Registrar Cita</button>
         </form>
-
-        <!-- Sección de citas registradas -->
-        <div class="mt-8">
-            <h2 class="text-xl font-semibold">Citas Registradas (<span id="totalCitas">0</span>)</h2>
-            <ul id="listaCitas" class="mt-4 space-y-2"></ul>
-        </div>
-
-        <!-- Instrucciones -->
-        <!--
-        Instrucciones de uso:
-        1. Completa los campos del formulario y haz clic en "Registrar Cita".
-        2. Solo se permiten hasta 3 citas por día.
-        3. Puedes editar o eliminar citas registradas con los botones correspondientes.
-        -->
+      </div>
     </div>
+
+    <!-- Lista de Citas Registradas -->
+    <div class="card">
+      <h2 class="card-title text-xl font-bold">Citas Registradas</h2>
+      <ul id="listaCitas" class="list-none">
+        <!-- Aquí se cargarán las citas -->
+      </ul>
+    </div>
+  </div>
+
+  <script>
+    // Función para registrar cita
+    document.getElementById('formCita').addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const nombre = document.getElementById('nombre').value;
+      const fecha = document.getElementById('fecha').value;
+      const hora = document.getElementById('hora').value;
+      const tipoTramite = document.getElementById('tipo_tramite').value;
+
+      // Verificar si ya hay 3 citas para ese día
+      const citasRef = collection(db, 'citas');
+      const q = query(citasRef, where("fecha", "==", fecha));
+      const querySnapshot = await getDocs(q);
+      if (querySnapshot.size >= 3) {
+        alert('No se pueden registrar más de tres citas por día');
+        return;
+      }
+
+      // Registrar nueva cita
+      try {
+        await addDoc(citasRef, {
+          nombre: nombre,
+          fecha: fecha,
+          hora: hora,
+          tipo_tramite: tipoTramite
+        });
+        alert('Cita registrada con éxito');
+        cargarCitas();
+        document.getElementById('formCita').reset();
+      } catch (error) {
+        console.error("Error agregando cita: ", error);
+      }
+    });
+
+    // Función para cargar citas registradas
+    async function cargarCitas() {
+      const listaCitas = document.getElementById('listaCitas');
+      listaCitas.innerHTML = '';
+
+      const citasRef = collection(db, 'citas');
+      const q = query(citasRef, orderBy('fecha'), orderBy('hora'));
+      const querySnapshot = await getDocs(q);
+
+      querySnapshot.forEach(doc => {
+        const cita = doc.data();
+        const li = document.createElement('li');
+        li.classList.add('mb-2', 'border-b', 'pb-2');
+        li.innerHTML = `
+          <strong>${cita.nombre}</strong> - ${cita.fecha} ${cita.hora} - ${cita.tipo_tramite}
+          <button class="ml-4 text-red-500 hover:text-red-700" onclick="eliminarCita('${doc.id}')">Eliminar</button>
+        `;
+        listaCitas.appendChild(li);
+      });
+    }
+
+    // Función para eliminar cita
+    async function eliminarCita(id) {
+      if (confirm('¿Estás seguro de que deseas eliminar esta cita?')) {
+        const citaDocRef = doc(db, 'citas', id);
+        await deleteDoc(citaDocRef);
+        cargarCitas();
+      }
+    }
+
+    // Cargar citas al iniciar
+    cargarCitas();
+  </script>
+
 </body>
 </html>
